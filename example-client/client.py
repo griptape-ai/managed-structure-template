@@ -1,6 +1,9 @@
+import sys
 import os
 import requests
 import time
+
+from requests.exceptions import HTTPError
 
 HOST = "http://127.0.0.1:5000"
 GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
@@ -37,4 +40,7 @@ def run_structure(input: str) -> str:
         raise Exception(content["stderr"])
 
 
-print(run_structure("What is 123 * 34, 23 / 12.3, and 9 ^ 4"))
+try:
+    print(run_structure("What is 123 * 34, 23 / 12.3, and 9 ^ 4"))
+except HTTPError as e:
+    print(f'HTTP Error: {e.response.json()["detail"]}', file=sys.stderr)
