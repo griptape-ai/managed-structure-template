@@ -43,4 +43,4 @@ def run_structure(input: str) -> str:
 try:
     print(run_structure("What is 123 * 34, 23 / 12.3, and 9 ^ 4"))
 except HTTPError as e:
-    print(f'HTTP Error: {e.response.json()["detail"]}', file=sys.stderr)
+    print(f"HTTP Error: {e.response.text}", file=sys.stderr)
