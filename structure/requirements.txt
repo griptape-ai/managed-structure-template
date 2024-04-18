@@ -1,1 +1,2 @@
 git+https://github.com/griptape-ai/griptape.git#egg=griptape
+python-dotenv
