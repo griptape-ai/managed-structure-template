@@ -1,6 +1,8 @@
 import os
 import sys
 
+from dotenv import load_dotenv
+
 from griptape.artifacts import TextArtifact
 from griptape.drivers import (
     GriptapeCloudEventListenerDriver,
@@ -18,11 +20,19 @@ def is_running_in_managed_environment():
     return "GT_CLOUD_RUN_ID" in os.environ
 
 
+# If running completely local, such as within an IDE, load environment vars.
+if not is_running_in_managed_environment():
+    load_dotenv()
+
 input = sys.argv[1]
 
 # We need an event driver to communicate events from our program back to Skatepark
+listener_base = os.environ.get("GRIPTAPE_SKATEPARK_URL_OVERRIDE", "http://127.0.0.1")
+listener_port = os.environ.get("GRIPTAPE_SKATEPARK_PORT_OVERRIDE", "5000")
+listener_url = f"{listener_base}:{listener_port}"
+
 event_driver = GriptapeCloudEventListenerDriver(
-    base_url="http://127.0.0.1:5000", api_key="..."
+    base_url=listener_url, api_key="..."
 )
 
 #### BEGIN EXAMPLE: USING A GRIPTAPE AGENT
