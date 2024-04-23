@@ -8,7 +8,7 @@ See the [Griptape CLI](https://github.com/griptape-ai/griptape-cli?tab=readme-ov
 The template provides the following project layout:
 
 - `structure/structure.py` Contains the Managed Structure code.
-- `structure/requirements.txt` Contains the dependencies for the Managed Structure. These will be automatically installed when the Structure is registered with Skatepark.
+- `requirements.txt` Contains the dependencies for the Managed Structure. These will be automatically installed when the Structure is registered with Skatepark.
 - `example-client/client.py` Contains an example client that _uses_ the Managed Structure's API. This is useful for testing your Managed Structure locally but ultimately you will want to integrate your Managed Structure with your own application. 
 - `example-client/pyproject.toml` Contains the dependencies for the example client. Poetry is only used for the example client and is not used by the Managed Structure itself.
 
