@@ -55,16 +55,16 @@ input = sys.argv[1]
 # We need an event driver to communicate events from our program back to our
 # host, which could be the locally-run Skatepark or Griptape Cloud.
 # The event driver requires a URL to the host.
-# * In Griptape Cloud, this environment variable is automatically provided to you in GT_CLOUD_BASE_URL.
-# * In Skatepark, you may optionally provide your own if you have overridden
-#   the default URL and port that the emulator is listening on. Otherwise,
-#   it will use the default URL and port.
+# When running in Skatepark or Griptape Cloud, this value is automatically provided to 
+# you in the environment variable GT_CLOUD_BASE_URL. You can override 
+# this value by specifying your own for GriptapeCloudEventListenerDriver.base_url.
 event_driver = GriptapeCloudEventListenerDriver(
     api_key=get_listener_api_key()
 )
 
 #### BEGIN EXAMPLE: USING A GRIPTAPE AGENT
-# This example uses a Griptape Agent. The Agent will generate the correct events to indicate if the run has succeeded or failed.
+# This example uses a Griptape Agent. The Agent will generate the correct events to indicate 
+# if the run has succeeded or failed.
 structure = Agent(
     tools=[Calculator(off_prompt=False)],
     event_listeners=[EventListener(driver=event_driver)],
