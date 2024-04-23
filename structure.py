@@ -46,7 +46,7 @@ def get_listener_api_key() -> str:
               )
     return api_key
 
-
+  
 # If running completely local, such as within an IDE, load environment vars.
 if not is_running_in_managed_environment():
     load_dotenv()
