@@ -23,20 +23,6 @@ def is_running_in_managed_environment() -> bool:
     return "GT_CLOUD_RUN_ID" in os.environ
 
 
-def get_listener_url() -> str:
-    """The event driver requires a URL, stored in the GT_CLOUD_BASE_URL 
-    environment variable.
-    In Griptape Cloud, this environment variable is provided for you.
-    In Skatepark, you may optionally provide your own if you have overridden
-    the default URL and port that the emulator is listening on. Otherwise,
-    it will use the default URL and port.
-
-    Returns:
-        The URL of the host listening to the Structure.
-    """
-    return os.environ.get("GT_CLOUD_BASE_URL")
-
-
 def get_listener_api_key() -> str:
     """The event driver expects a Griptape API Key as a parameter.
     When your program is running in Griptape Cloud, you will need to provide a 
