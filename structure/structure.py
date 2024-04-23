@@ -26,8 +26,8 @@ def is_running_in_managed_environment() -> bool:
 def get_listener_api_key() -> str:
     """The event driver expects a Griptape API Key as a parameter.
     When your program is running in Griptape Cloud, you will need to provide a 
-    valid Griptape API Key in the GT_CLOUD_API_KEY environment variable 
-    in order to authorize calls. 
+    valid Griptape API Key in the GT_CLOUD_API_KEY environment variable, otherwise
+    the service will not authorize the necessary calls. 
     You can create an API Key by visiting https://cloud.griptape.ai/keys 
     When running in Skatepark, the API key is not needed since it isn't validating calls.
 
@@ -54,9 +54,9 @@ input = sys.argv[1]
 
 # We need an event driver to communicate events from our program back to our
 # host, which could be the locally-run Skatepark or Griptape Cloud.
-# The event driver requires a URL, stored in the GT_CLOUD_BASE_URL environment variable.
-# In Griptape Cloud, this environment variable is provided for you.
-# In Skatepark, you may optionally provide your own if you have overridden
+# The event driver requires a URL to the host.
+# * In Griptape Cloud, this environment variable is automatically provided to you in GT_CLOUD_BASE_URL.
+# * In Skatepark, you may optionally provide your own if you have overridden
 # the default URL and port that the emulator is listening on. Otherwise,
 # it will use the default URL and port.
 event_driver = GriptapeCloudEventListenerDriver(
