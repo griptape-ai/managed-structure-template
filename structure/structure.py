@@ -57,8 +57,8 @@ input = sys.argv[1]
 # The event driver requires a URL to the host.
 # * In Griptape Cloud, this environment variable is automatically provided to you in GT_CLOUD_BASE_URL.
 # * In Skatepark, you may optionally provide your own if you have overridden
-# the default URL and port that the emulator is listening on. Otherwise,
-# it will use the default URL and port.
+#   the default URL and port that the emulator is listening on. Otherwise,
+#   it will use the default URL and port.
 event_driver = GriptapeCloudEventListenerDriver(
     api_key=get_listener_api_key()
 )
