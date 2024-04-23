@@ -26,13 +26,26 @@ if not is_running_in_managed_environment():
 
 input = sys.argv[1]
 
-# We need an event driver to communicate events from our program back to Skatepark
-listener_base = os.environ.get("GRIPTAPE_SKATEPARK_URL_OVERRIDE", "http://127.0.0.1")
-listener_port = os.environ.get("GRIPTAPE_SKATEPARK_PORT_OVERRIDE", "5000")
-listener_url = f"{listener_base}:{listener_port}"
+# We need an event driver to communicate events from our program back to our
+# host, which could be the locally-run Skatepark or Griptape Cloud.
+
+# The event driver requires a URL, stored in the GRIPTAPE_CLOUD_BASE_URL 
+# environment variable.
+# In Griptape Cloud, this environment variable is provided for you.
+# In Skatepark, you may optionally provide your own if you have overridden
+# the default URL and port that the emulator is listening on. Otherwise,
+# it will use the default URL and port.
+listener_url = os.environ.get("GRIPTAPE_CLOUD_BASE_URL")
+
+# The event driver expects a Griptape API Key as a parameter.
+# When your program is running in Griptape Cloud, you will need to provide a 
+# valid Griptape API Key in order to authorize calls. 
+# You can create one by visiting https://cloud.griptape.ai/keys 
+# When running in Skatepark, the API key is not needed since it isn't validating calls.
+griptape_api_key = os.environ.get("GRIPTAPE_CLOUD_API_KEY")
 
 event_driver = GriptapeCloudEventListenerDriver(
-    base_url=listener_url, api_key="..."
+    base_url=listener_url, api_key=griptape_api_key
 )
 
 #### BEGIN EXAMPLE: USING A GRIPTAPE AGENT
