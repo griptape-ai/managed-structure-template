@@ -15,8 +15,12 @@ from griptape.structures import Agent
 from griptape.tools import Calculator
 
 
-# Returns True if this program is being run from within Griptape Cloud or via the Skatepark emulator
 def is_running_in_managed_environment():
+    """Determine if the program is running in a managed environment (e.g., Griptape Cloud or Skatepark emulator).
+
+    Returns:
+        bool: True if the program is running in a managed environment, False otherwise.
+    """
     return "GT_CLOUD_RUN_ID" in os.environ
 
 
