@@ -36,10 +36,10 @@ def run_structure(input: str) -> Optional[str]:
         structure_run = get_structure_run(structure_run_id)
         status = structure_run["status"]
 
-        # Uncomment this block to print the streaming events.
-        # event_list = get_structure_run_events(structure_run_id)
-        # events = event_list["events"]
-        # printed_event_ids = print_streaming_events(events, printed_event_ids)
+        # You can comment out this block if you don't want to streaming events.
+        event_list = get_structure_run_events(structure_run_id)
+        events = event_list["events"]
+        printed_event_ids = print_streaming_events(events, printed_event_ids)
 
         time.sleep(1)  # Poll every second.
 
