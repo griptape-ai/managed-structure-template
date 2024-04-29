@@ -94,6 +94,7 @@ def get_structure_run_events(host: str, api_key: str, run_id: str) -> dict:
     """
     response = requests.get(
         f"{host}/api/structure-runs/{run_id}/events",
+        headers=generate_headers(api_key)
     )
     response.raise_for_status()
 
@@ -113,6 +114,7 @@ def get_structure_run_logs(host: str, api_key: str, run_id: str) -> dict:
     """
     response = requests.get(
         f"{host}/api/structure-runs/{run_id}/logs",
+        headers=generate_headers(api_key)
     )
     response.raise_for_status()
 
