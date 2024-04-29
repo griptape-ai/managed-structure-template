@@ -1,4 +1,8 @@
+import os
 import requests
+
+
+GT_CLOUD_BASE_URL = os.environ.get("GT_CLOUD_BASE_URL", "http://127.0.0.1:5000")
 
 
 def print_streaming_events(
@@ -39,7 +43,8 @@ def create_structure_run(structure_id: str, env: dict, args: list) -> dict:
         The created Structure Run.
     """
     response = requests.post(
-        f"{HOST}/api/structures/{structure_id}/runs", json={"env": env, "args": args}
+        f"{GT_CLOUD_BASE_URL}/api/structures/{structure_id}/runs",
+        json={"env": env, "args": args},
     )
     response.raise_for_status()
 
@@ -55,7 +60,7 @@ def get_structure_run(run_id: str) -> dict:
     Returns:
         The Structure Run.
     """
-    response = requests.get(f"{HOST}/api/structure-runs/{run_id}")
+    response = requests.get(f"{GT_CLOUD_BASE_URL}/api/structure-runs/{run_id}")
     response.raise_for_status()
 
     return response.json()
@@ -71,7 +76,24 @@ def get_structure_run_events(run_id: str) -> dict:
         The events for the Structure Run.
     """
     response = requests.get(
-        f"{HOST}/api/structure-runs/{run_id}/events",
+        f"{GT_CLOUD_BASE_URL}/api/structure-runs/{run_id}/events",
+    )
+    response.raise_for_status()
+
+    return response.json()
+
+
+def get_structure_run_logs(run_id: str) -> dict:
+    """Get all logs for a run.
+
+    Args:
+        run_id: The Structure Run ID.
+
+    Returns:
+        The logs for the Structure Run.
+    """
+    response = requests.get(
+        f"{GT_CLOUD_BASE_URL}/api/structure-runs/{run_id}/logs",
     )
     response.raise_for_status()
 
