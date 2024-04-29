@@ -53,7 +53,7 @@ def run_structure(input: str) -> Optional[str]:
     structure_run = create_structure_run(
         host=HOST,
         api_key=GT_API_KEY,
-        structure=GT_STRUCTURE_ID, 
+        structure_id=GT_STRUCTURE_ID, 
         env={}, 
         args=[input]
         )
@@ -66,7 +66,7 @@ def run_structure(input: str) -> Optional[str]:
         structure_run = get_structure_run(
             host=HOST,
             api_key=GT_API_KEY,
-            structure_run_id=structure_run_id
+            run_id=structure_run_id
             )
         status = structure_run["status"]
 
@@ -74,7 +74,7 @@ def run_structure(input: str) -> Optional[str]:
         event_list = get_structure_run_events(
             host=HOST,
             api_key=GT_API_KEY,
-            structure_run_id=structure_run_id
+            run_id=structure_run_id
             )
         events = event_list["events"]
         printed_event_ids = print_streaming_events(events, printed_event_ids)
@@ -84,7 +84,7 @@ def run_structure(input: str) -> Optional[str]:
     logs = get_structure_run_logs(
         host=HOST,
         api_key=GT_API_KEY,
-        structure_run_id=structure_run_id
+        run_id=structure_run_id
         )
 
     if structure_run["status"] == "SUCCEEDED":
