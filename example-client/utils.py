@@ -7,13 +7,13 @@ GT_CLOUD_BASE_URL = os.environ.get("GT_CLOUD_BASE_URL", "http://127.0.0.1:5000")
 
 def print_streaming_events(
     events: list[dict],
-    printed_events: set,
+    printed_event_ids: set,
 ) -> set:
     """Print all `CompletionChunkEvent` tokens.
 
     Args:
         events: The events to print.
-        printed_events: The set of ids of already printed events. Used to prevent duplicate printing.
+        printed_event_ids: The set of ids of already printed events. Used to prevent duplicate printing.
     Returns:
         The updated set of printed events.
     """
@@ -21,14 +21,14 @@ def print_streaming_events(
         event
         for event in events
         if event["value"]["type"] == "CompletionChunkEvent"
-        and event["event_id"] not in printed_events
+        and event["event_id"] not in printed_event_ids
     ]
 
     for completion_event in new_completion_events:
         print(completion_event["value"]["token"], flush=True, end="")
-        printed_events.add(completion_event["event_id"])
+        printed_event_ids.add(completion_event["event_id"])
 
-    return printed_events
+    return printed_event_ids
 
 
 def create_structure_run(structure_id: str, env: dict, args: list) -> dict:

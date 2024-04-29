@@ -31,7 +31,7 @@ def run_structure(input: str) -> Optional[str]:
     # Runs are asynchronous, so we need to poll the status until it's no longer running.
     structure_run_id = structure_run["structure_run_id"]
     status = structure_run["status"]
-    printed_events = set()  # Keep track of which events we've printed.
+    printed_event_ids = set()  # Keep track of which events we've printed.
     while status not in ("SUCCEEDED", "FAILED"):
         structure_run = get_structure_run(structure_run_id)
         status = structure_run["status"]
@@ -39,7 +39,7 @@ def run_structure(input: str) -> Optional[str]:
         # Uncomment this block to print the streaming events.
         # event_list = get_structure_run_events(structure_run_id)
         # events = event_list["events"]
-        # printed_events = print_streaming_events(events, printed_events)
+        # printed_event_ids = print_streaming_events(events, printed_event_ids)
 
         time.sleep(1)  # Poll every second.
 
