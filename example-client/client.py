@@ -2,6 +2,7 @@ import os
 import sys
 import time
 
+from dotenv import load_dotenv
 from requests.exceptions import HTTPError
 from typing import Optional
 
@@ -13,21 +14,28 @@ from utils import (
     get_structure_run_logs,
 )
 
-# If running the client against the Skatepark emulator, 
-# use these values to specify the Host and Structure ID.
-# Comment them out if you are running against Griptape Cloud.
-HOST = "http://127.0.0.1:5000"
-GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
-GT_API_KEY = "API KEY NOT NEEDED FOR SKATEPARK EMULATOR"
+# Pull in configuration variables.
+load_dotenv()
 
-# If running the client against a Structure in Griptape Cloud,
-# use these values to specify the Host and Structure ID.
-# Note that Griptape Cloud requires a valid API Key in order
+# If running against the Skatepark emulator, you will need to set
+# this environment variable (or put it in a .env file) to tell the
+# client which URL Skatepark is listening on. The default value is
+# http://127.0.0.1:5000 .
+# For a Structure in Griptape Cloud, this environment variable 
+# should be set to https://cloud.griptape.ai/
+HOST = os.environ["GT_CLOUD_BASE_URL"]
+
+# If running against the Skatepark emulator, this will be the ID
+# of the Structure that you registered with Skatepark. For a Structure
+# hosted in Griptape Cloud, it will be the ID of the Structure you 
+# are running, which can be found at https://cloud.griptape.ai/structures 
+GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
+
+# The Skatepark emulator does NOT require a Griptape API key.
+# However, Griptape Cloud requires a valid API Key in order
 # to authorize calling the API. You can generate a key by
 # visiting https://cloud.griptape.ai/keys
-# HOST = "https://cloud.griptape.ai"
-# GT_STRUCTURE_ID = "GO TO https://cloud.griptape.ai/structures TO GET STRUCTURE ID AND FILL IN HERE"
-# GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY")
+GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY", "GRIPTAPE API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
 
 # When running a Structure in Griptape Cloud, the requests
 # are first QUEUED before transitioning to RUNNING. Skatepark
