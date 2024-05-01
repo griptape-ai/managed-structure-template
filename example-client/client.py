@@ -37,8 +37,8 @@ GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 # visiting https://cloud.griptape.ai/keys
 GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY", "GRIPTAPE API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
 
-# When running a Structure in Griptape Cloud, the requests
-# are first QUEUED before transitioning to RUNNING. Skatepark
+# When running in Griptape Cloud, the Structure
+# is first QUEUED before transitioning to RUNNING. Skatepark
 # emulates this behavior by applying a default time to remain 
 # in the QUEUED state in order to allow your client to 
 # handle this state appropriately.

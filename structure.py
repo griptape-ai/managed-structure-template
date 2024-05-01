@@ -22,7 +22,7 @@ def is_running_in_managed_environment() -> bool:
     Returns:
         bool: True if the program is running in a managed environment, False otherwise.
     """
-    return "GT_CLOUD_RUN_ID" in os.environ
+    return "GT_CLOUD_STRUCTURE_RUN_ID" in os.environ
 
 
 def get_listener_api_key() -> str:
@@ -64,8 +64,7 @@ def run_example_with_griptape_agent(input: str, event_driver: Optional[GriptapeC
         event_listeners=[EventListener(driver=event_driver)],
     )
 
-    output = structure.run(input)
-    return output
+    structure.run(input)
 
 
 def run_example_with_no_agent(input: str, event_driver: Optional[GriptapeCloudEventListenerDriver]):
