@@ -37,15 +37,6 @@ GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 # visiting https://cloud.griptape.ai/keys
 GT_API_KEY = os.environ.get("GT_CLOUD_API_KEY", "GRIPTAPE API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD")
 
-# When running in Griptape Cloud, the Structure
-# is first QUEUED before transitioning to RUNNING. Skatepark
-# emulates this behavior by applying a default time to remain 
-# in the QUEUED state in order to allow your client to 
-# handle this state appropriately.
-# You can override the time that the Structure remains in
-# the QUEUED state within Skatepark by setting the environment
-# variable GT_SKATEPARK_QUEUE_DELAY to the desired time in seconds.
-
 
 def run_structure(input: str) -> Optional[str]:
     """Run a Structure program.
@@ -78,7 +69,7 @@ def run_structure(input: str) -> Optional[str]:
             )
         status = structure_run["status"]
 
-        # You can comment out this block if you don't want to streaming events.
+        # You can comment out this block if you don't want to stream events as they occur.
         event_list = get_structure_run_events(
             host=HOST,
             api_key=GT_API_KEY,
