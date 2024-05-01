@@ -49,9 +49,11 @@ def get_listener_api_key() -> str:
     return api_key
 
 
-def run_example_with_griptape_agent(input: str, event_driver: Optional[GriptapeCloudEventListenerDriver]):
-    """This example demonstrates how to use a Griptape Agent as a Structure. 
-    The Agent is equipped with a Calculator tool, which it can use to solve math problems. 
+def run_example_with_griptape_agent(
+    input: str, event_driver: Optional[GriptapeCloudEventListenerDriver]
+):
+    """This example demonstrates how to use a Griptape Agent as a Structure.
+    The Agent is equipped with a Calculator tool, which it can use to solve math problems.
     The Agent will generate events as it thinks through the problem, and then emits events
     to indicate if the run has succeeded or failed.
 
@@ -67,13 +69,15 @@ def run_example_with_griptape_agent(input: str, event_driver: Optional[GriptapeC
     structure.run(input)
 
 
-def run_example_with_no_agent(input: str, event_driver: Optional[GriptapeCloudEventListenerDriver]):
-    """This example demonstrates how to run a program that does NOT rely on Griptape Agents, 
+def run_example_with_no_agent(
+    input: str, event_driver: Optional[GriptapeCloudEventListenerDriver]
+):
+    """This example demonstrates how to run a program that does NOT rely on Griptape Agents,
     Pipelines, or Workflows, but still gets the benefits of running in the managed environment.
     There are situations where you may need to emit events outside of the automatic event generation
     that Agents, et. al. perform.
 
-    This example creates a TextArtifact as output and then emits the FinishStructureRunEvent, 
+    This example creates a TextArtifact as output and then emits the FinishStructureRunEvent,
     making the output visible from within the Skatepark emulator or in the Griptape Cloud console.
 
     Args:
@@ -101,9 +105,9 @@ if is_running_in_managed_environment():
     # We need an event driver to communicate events from this program back
     # to our host.
     # The event driver requires a URL to the host.
-    # When running in Skatepark or Griptape Cloud, this value is automatically 
-    # provided to you in the environment variable GT_CLOUD_BASE_URL. You can 
-    # override this value by specifying your own for 
+    # When running in Skatepark or Griptape Cloud, this value is automatically
+    # provided to you in the environment variable GT_CLOUD_BASE_URL. You can
+    # override this value by specifying your own for
     # GriptapeCloudEventListenerDriver.base_url .
     event_driver = GriptapeCloudEventListenerDriver(api_key=get_listener_api_key())
 else:
@@ -111,7 +115,7 @@ else:
     # This is done automatically for you when the Structure is run within the
     # Skatepark emulator or as a Structure on Griptape Cloud.
     load_dotenv()
-    
+
     # We don't need an event driver if we're testing the program in an IDE.
     event_driver = None
 

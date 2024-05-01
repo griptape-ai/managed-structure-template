@@ -32,7 +32,7 @@ def generate_headers(api_key: str) -> dict:
 
     Args:
         api_key: a Griptape Cloud API Key. This is ignored when running the Skatepark emulator, but required for a Griptape Cloud hosted Structure.
-    
+
     Returns:
         Dictionary for the header field in a requests call.
     """
@@ -43,7 +43,9 @@ def generate_headers(api_key: str) -> dict:
     return headers
 
 
-def create_structure_run(host: str, api_key: str, structure_id: str, env: dict, args: list) -> dict:
+def create_structure_run(
+    host: str, api_key: str, structure_id: str, env: dict, args: list
+) -> dict:
     """Create a Structure Run.
 
     Args:
@@ -57,7 +59,9 @@ def create_structure_run(host: str, api_key: str, structure_id: str, env: dict, 
         The created Structure Run.
     """
     response = requests.post(
-        f"{host}/api/structures/{structure_id}/runs", json={"env": env, "args": args}, headers=generate_headers(api_key)
+        f"{host}/api/structures/{structure_id}/runs",
+        json={"env": env, "args": args},
+        headers=generate_headers(api_key),
     )
     response.raise_for_status()
 
@@ -75,7 +79,9 @@ def get_structure_run(host: str, api_key: str, run_id: str) -> dict:
     Returns:
         The Structure Run.
     """
-    response = requests.get(f"{host}/api/structure-runs/{run_id}", headers=generate_headers(api_key))
+    response = requests.get(
+        f"{host}/api/structure-runs/{run_id}", headers=generate_headers(api_key)
+    )
     response.raise_for_status()
 
     return response.json()
@@ -93,8 +99,7 @@ def get_structure_run_events(host: str, api_key: str, run_id: str) -> dict:
         The events for the Structure Run.
     """
     response = requests.get(
-        f"{host}/api/structure-runs/{run_id}/events",
-        headers=generate_headers(api_key)
+        f"{host}/api/structure-runs/{run_id}/events", headers=generate_headers(api_key)
     )
     response.raise_for_status()
 
@@ -113,8 +118,7 @@ def get_structure_run_logs(host: str, api_key: str, run_id: str) -> dict:
         The logs for the Structure Run.
     """
     response = requests.get(
-        f"{host}/api/structure-runs/{run_id}/logs",
-        headers=generate_headers(api_key)
+        f"{host}/api/structure-runs/{run_id}/logs", headers=generate_headers(api_key)
     )
     response.raise_for_status()
 
