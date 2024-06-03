@@ -93,7 +93,7 @@ def run_example_with_no_agent(
     )
 
     if event_driver:
-        event_driver.publish_event(done_event)
+        event_driver.publish_event(done_event, flush=True)
 
 
 input = sys.argv[1]
