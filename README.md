@@ -11,7 +11,7 @@ The template provides the following project layout:
 
 - `structure.py` Contains the Managed Structure code.
 - `requirements.txt` Contains the dependencies for the Managed Structure. These will be automatically installed when the Structure is registered with Skatepark.
-- `structure_file.yaml` Contains the Managed Structure configuration required by Skatepark and Griptape Cloud to properly build and run the Structure.
+- `structure_file.yaml` Contains the Managed Structure configuration. This informs Griptape Cloud and the Skatepark of your Managed Structure's dependencies and how it needs to build and run.
 - `example-client/client.py` Contains an example client that _uses_ the Managed Structure's API. This is useful for testing your Managed Structure locally but ultimately you will want to integrate your Managed Structure with your own application.
 - `example-client/pyproject.toml` Contains the dependencies for the example client. Poetry is only used for the example client and is not used by the Managed Structure itself.
 
@@ -28,7 +28,7 @@ runtime_version: 3.11 # Defines the specific version of the runtime environment 
 build: # Defines the build-time configuration for the Structure
   requirements_file: requirements.txt # Defines the path to the requirements.txt file for the Structure, relative to the structure_file.yaml. Or absolute from the repository root if a forward slash is used: `/requirements.txt`.
 run: # Defines the run-time configuration for the Structure
-  main_file: structure.py # Defines the path to the main Managed Structure Code, relative to the structure_file.yaml. Or absolute from the repository root if a forward slash is used: `/structure.py`.
+  main_file: structure.py # Specifies the path to the entry point file of the Managed Structure. This path is relative to the structure_file.yaml. Or absolute from the repository root if a forward slash is used: `/structure.py`.
 ```
 
 ## Running Managed Code Outside of a Griptape Agent, Pipeline, or Workflow
