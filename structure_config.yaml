@@ -3,5 +3,7 @@ runtime: python3
 runtime_version: 3.11
 build:
   requirements_file: requirements.txt
+  full_rebuild_on_file_changes:
+    - requirements.txt
 run:
   main_file: structure.py
