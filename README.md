@@ -35,13 +35,23 @@ run: # Defines the run-time configuration for the Structure
   main_file: structure.py # Specifies the path to the entry point file of the Managed Structure. This path is relative to the structure_config.yaml. Or absolute from the repository root if a forward slash is used: `/structure.py`.
 ```
 
+#### Cache Build Dependencies Field
+
+By default, Griptape Cloud will rebuild and reinstall all dependencies for a Structure on Deployment.
+
+When `cache_build_dependencies` is disabled, Griptape Cloud will always build the Structure code and install dependencies on every Deployment.
+
+When `cache_build_dependencies` is enabled, Griptape Cloud will cache the base runtime dependencies for the Structure for reuse on subsequent Deployments. This speeds up the Deployment process, especially for Structures with many dependencies. That cache will be invalidated when any of the configured `watched_files` change. For instance, if the `requirements.txt` file is configured as the only `watched_file`, then Griptape Cloud will only rebuild the Structure and install dependencies when that file has changes from a previous Deployment. If there are no changes to `requirements.txt`, then Griptape Cloud will reuse the previously built base Structure runtime, and copy over the new Deployment's Structure code files.
+
+When `cache_build_dependencies` is enabled, but there are no `watched_files` specified, Griptape Cloud will build the Structure code and install dependencies on every Deployment, similar to the behavior when `cache_build_dependencies` is disabled.
+
 ## Running Managed Code Outside of a Griptape Agent, Pipeline, or Workflow
 
 Code running inside of a [Griptape Structure](https://docs.griptape.ai/stable/griptape-framework/structures/agents/) (such as an Agent, Pipeline, or Workflow), will publish events automatically.
 
 However, when running code _outside_ of a Structure, you will need to publish events manually in order to communicate status back to the client. For example, if you want to gracefully exit before running an Agent, you will need to manually publish an event:
 
-```
+```python
 task_input = TextArtifact(value="Input params: empty.")
 task_output = TextArtifact(value="Already up to date!")
 done_event = FinishStructureRunEvent(
@@ -63,13 +73,13 @@ To sync your project with the latest changes from this template, you can run the
 git remote add upstream https://github.com/griptape-ai/managed-structure-template.git
 ```
 
-2. Fetch the latest changes from the template repository:
+1. Fetch the latest changes from the template repository:
 
 ```bash
 git fetch upstream
 ```
 
-3. Merge the changes into your project:
+1. Merge the changes into your project:
 
 ```bash
 git merge upstream/main --allow-unrelated-histories
