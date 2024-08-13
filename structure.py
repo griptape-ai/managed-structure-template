@@ -31,7 +31,7 @@ def get_listener_api_key() -> str:
     When your program is running in Griptape Cloud, you will need to provide a
     valid Griptape Cloud API Key in the GT_CLOUD_API_KEY environment variable, otherwise
     the service will not authorize the necessary calls.
-    You can create an API Key by visiting https://cloud.griptape.ai/keys
+    You can create an API Key by visiting https://cloud.griptape.ai/account/api-keys .
     When running in Skatepark, the API key is not needed since it isn't validating calls.
 
     Returns:
@@ -43,7 +43,7 @@ def get_listener_api_key() -> str:
             """
               ****WARNING****: No value was found for the 'GT_CLOUD_API_KEY' environment variable.
               This environment variable is required when running in Griptape Cloud for authorization.
-              You can generate a Griptape Cloud API Key by visiting https://cloud.griptape.ai/keys .
+              You can generate a Griptape Cloud API Key by visiting https://cloud.griptape.ai/account/api-keys .
               Specify it as an environment variable when creating a Managed Structure in Griptape Cloud.
               """
         )
