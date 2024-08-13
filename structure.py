@@ -8,6 +8,7 @@ from griptape.drivers import (
     GriptapeCloudEventListenerDriver,
 )
 from griptape.events import (
+    event_bus,
     EventListener,
     FinishStructureRunEvent,
 )
@@ -61,10 +62,8 @@ def run_example_with_griptape_agent(
         input: a string with a question for the agent (e.g., "What is 2 ^ 31?")
         event_driver (optional): the object that will publish events as the agent thinks.
     """
-    structure = Agent(
-        tools=[Calculator(off_prompt=False)],
-        event_listeners=[EventListener(driver=event_driver)],
-    )
+
+    structure = Agent(tools=[Calculator(off_prompt=False)])
 
     structure.run(input)
 
@@ -92,8 +91,8 @@ def run_example_with_no_agent(
         output_task_input=task_input, output_task_output=output_artifact
     )
 
-    if event_driver:
-        event_driver.publish_event(done_event, flush=True)
+    # Broadcast the event to all listeners
+    event_bus.publish_event(done_event, flush=True)
 
 
 input = sys.argv[1]
@@ -101,7 +100,6 @@ input = sys.argv[1]
 # Are we running this program in a managed environment (i.e., the Skatepark
 # emulator or Griptape Cloud), or completely local (such as within an IDE)?
 if is_running_in_managed_environment():
-    # In the managed environment, our environment variables are provided for us.
     # We need an event driver to communicate events from this program back
     # to our host.
     # The event driver requires a URL to the host.
@@ -119,6 +117,8 @@ else:
     # We don't need an event driver if we're testing the program in an IDE.
     event_driver = None
 
+# If we're using an event driver, ensure its events go to the global event bus.
+event_bus.add_event_listener(EventListener(driver=event_driver))
 
 # This function will run with a Griptape Agent, who will automatically emit events.
 run_example_with_griptape_agent(input, event_driver)
