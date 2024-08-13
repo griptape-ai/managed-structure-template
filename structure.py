@@ -13,7 +13,7 @@ from griptape.events import (
     FinishStructureRunEvent,
 )
 from griptape.structures import Agent
-from griptape.tools import Calculator
+from griptape.tools import CalculatorTool
 from typing import Optional
 
 
@@ -63,7 +63,7 @@ def run_example_with_griptape_agent(
         event_driver (optional): the object that will publish events as the agent thinks.
     """
 
-    structure = Agent(tools=[Calculator(off_prompt=False)])
+    structure = Agent(tools=[CalculatorTool(off_prompt=False)])
 
     structure.run(input)
 
