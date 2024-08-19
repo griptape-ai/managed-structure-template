@@ -1,2 +1,3 @@
-griptape
+# DO NOT MERGE THIS. UPDATE TO 0.30 AFTER THAT IS RELEASED
+griptape[all] @ git+https://github.com/griptape-ai/griptape@dev
 python-dotenv
