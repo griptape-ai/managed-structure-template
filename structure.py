@@ -8,7 +8,7 @@ from griptape.drivers import (
     GriptapeCloudEventListenerDriver,
 )
 from griptape.events import (
-    event_bus,
+    EventBus,
     EventListener,
     FinishStructureRunEvent,
 )
@@ -92,7 +92,7 @@ def run_example_with_no_agent(
     )
 
     # Broadcast the event to all listeners
-    event_bus.publish_event(done_event, flush=True)
+    EventBus.publish_event(done_event, flush=True)
 
 
 input = sys.argv[1]
@@ -118,7 +118,7 @@ else:
     event_driver = None
 
 # If we're using an event driver, ensure its events go to the global event bus.
-event_bus.add_event_listener(EventListener(driver=event_driver))
+EventBus.add_event_listener(EventListener(driver=event_driver))
 
 # This function will run with a Griptape Agent, who will automatically emit events.
 run_example_with_griptape_agent(input, event_driver)
