@@ -34,7 +34,7 @@ GT_STRUCTURE_ID = os.environ["GT_STRUCTURE_ID"]
 # The Skatepark emulator does NOT require a Griptape Cloud API key.
 # However, Griptape Cloud requires a valid API Key in order
 # to authorize calling the API. You can generate a key by
-# visiting https://cloud.griptape.ai/keys
+# visiting https://cloud.griptape.ai/configuration/api-keys
 GT_API_KEY = os.environ.get(
     "GT_CLOUD_API_KEY",
     "GRIPTAPE CLOUD API KEY ONLY NEEDED FOR STRUCTURES IN GRIPTAPE CLOUD",
