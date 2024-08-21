@@ -71,7 +71,7 @@ def run_structure(input: str) -> Optional[str]:
     printed_event_ids = set()  # Keep track of which events we've printed.
 
     # poll until we see a terminal status or output is present
-    while status not in ("SUCCEEDED", "FAILED") and output is None:
+    while status not in ("SUCCEEDED", "FAILED", "ERROR") and output is None:
         structure_run = get_structure_run(
             host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
         )
