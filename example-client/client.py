@@ -67,7 +67,7 @@ def run_structure(input: str) -> Optional[str]:
     # Runs are asynchronous, so we need to poll the status until it's no longer running.
     structure_run_id = structure_run["structure_run_id"]
     status = structure_run["status"]
-    output = structure_run.get("output")
+    output = None
     printed_event_ids = set()  # Keep track of which events we've printed.
 
     # poll until we see a terminal status or output is present
