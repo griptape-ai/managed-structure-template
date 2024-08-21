@@ -104,7 +104,7 @@ def run_structure(input: str) -> Optional[str]:
         )
         raise ValueError(stderr)
 
-    return output
+    return output.get("value")
 
 
 if __name__ == "__main__":
