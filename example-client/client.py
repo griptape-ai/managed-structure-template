@@ -67,12 +67,16 @@ def run_structure(input: str) -> Optional[str]:
     # Runs are asynchronous, so we need to poll the status until it's no longer running.
     structure_run_id = structure_run["structure_run_id"]
     status = structure_run["status"]
+    output = structure_run.get("output")
     printed_event_ids = set()  # Keep track of which events we've printed.
-    while status not in ("SUCCEEDED", "FAILED"):
+
+    # poll until we see a terminal status or output is present
+    while status not in ("SUCCEEDED", "FAILED") and output is None:
         structure_run = get_structure_run(
             host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
         )
         status = structure_run["status"]
+        output = structure_run.get("output")
 
         # You can comment out this block if you don't want to stream events as they occur.
         event_list = get_structure_run_events(
@@ -93,14 +97,14 @@ def run_structure(input: str) -> Optional[str]:
             None,
         )
         print(stdout)
-
-        return structure_run["output"]["value"] if "output" in structure_run else None
     else:
         stderr = next(
             (log["message"] for log in logs["logs"] if log["stream"] == "stderr"),
             None,
         )
         raise ValueError(stderr)
+
+    return output
 
 
 if __name__ == "__main__":
