@@ -63,7 +63,7 @@ def run_example_with_griptape_agent(
         event_driver (optional): the object that will publish events as the agent thinks.
     """
 
-    structure = Agent(tools=[CalculatorTool(off_prompt=False)])
+    structure = Agent(stream=True, tools=[CalculatorTool(off_prompt=False)])
 
     structure.run(input)
 
