@@ -77,7 +77,9 @@ def run_structure(input: str) -> Optional[str]:
             if event["origin"] == "SYSTEM":
                 status = event["payload"]["status"]
                 if event["type"] == "StructureRunError":
-                    output = "Error running Structure: {}".format(event["payload"]["status_detail"])
+                    output = "Error running Structure: {}".format(
+                        event["payload"]["status_detail"]
+                    )
                     print(output)
             elif event["origin"] == "USER":
                 match event["type"]:
@@ -90,7 +92,7 @@ def run_structure(input: str) -> Optional[str]:
                         print(event["payload"]["token"], flush=True, end="")
                     case _:
                         print("Event:", event["type"])
-    
+
         # Dont poll for the same events again.
         event_count = event_response["next_offset"]
         time.sleep(1)  # Poll every second.
