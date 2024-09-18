@@ -34,10 +34,7 @@ def create_structure_run(
     """
     response = requests.post(
         f"{host}/api/structures/{structure_id}/runs",
-        json={
-            "env_vars": [{"name": k, "value": v} for k, v in env.items()],
-            "args": args,
-        },
+        json={"env": env, "args": args},
         headers=generate_headers(api_key),
     )
     response.raise_for_status()
@@ -64,7 +61,27 @@ def get_structure_run(host: str, api_key: str, run_id: str) -> dict:
     return response.json()
 
 
-def get_structure_run_logs(host: str, api_key: str, run_id: str) -> dict:
+def get_structure_run_events(host: str, api_key: str, run_id: str, offset: int) -> dict:
+    """Get all events for a run.
+
+    Args:
+        host: the host URL for the Structure.
+        api_key: a Griptape Cloud API Key. This is ignored when running the Skatepark emulator, but required for a Griptape Cloud hosted Structure.
+        run_id: The Structure Run ID.
+
+    Returns:
+        The events for the Structure Run.
+    """
+    response = requests.get(
+        f"{host}/api/structure-runs/{run_id}/events",
+        params={"offset": offset},
+        headers=generate_headers(api_key),
+    )
+    response.raise_for_status()
+
+    return response.json()
+
+def get_structure_run_logs(host: str, api_key: str, run_id: str) -> list[str]:
     """Get all logs for a run.
 
     Args:

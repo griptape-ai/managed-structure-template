@@ -8,7 +8,10 @@ from typing import Optional
 
 from utils import (
     create_structure_run,
-    get_structure_run,
+    get_output_from_events,
+    get_status_from_events,
+    get_structure_run_events,
+    print_streaming_events,
     get_structure_run_logs,
     is_status_complete,
 )
@@ -22,7 +25,7 @@ load_dotenv()
 # http://127.0.0.1:5000 .
 # For a Structure in Griptape Cloud, this environment variable
 # should be set to https://cloud.griptape.ai/
-HOST = os.environ["GT_CLOUD_BASE_URL"]
+HOST = os.getenv("GT_CLOUD_BASE_URL", "http://cloud.griptape.ai")
 
 # If running against the Skatepark emulator, this will be the ID
 # of the Structure that you registered with Skatepark. For a Structure
@@ -66,12 +69,33 @@ def run_structure(input: str) -> Optional[str]:
     # Runs are asynchronous, so we need to poll the status until it's no longer running.
     structure_run_id = structure_run["structure_run_id"]
     status = structure_run["status"]
-
-    while not is_status_complete(status):
-        structure_run = get_structure_run(
-            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
+    offset = 0
+    output = None
+    while not is_status_complete(status) or output is None:
+        event_response = get_structure_run_events(
+            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id, offset=offset
         )
-        status = structure_run["status"]
+        events = event_response["events"]
+        for event in events:
+            if event["origin"] == "SYSTEM":
+                status = event["payload"]["status"]
+                if event["type"] == "StructureRunError":
+                    output = "Error running Structure: {}".format(event["payload"]["status_detail"])
+                    print(output)
+            elif event["origin"] == "USER":
+                match event["type"]:
+                    case "FinishStructureRunEvent":
+                        # The Griptape structure has output the result in this event,
+                        # so we can stop polling.
+                        output = event["payload"]["output_task_output"]["value"]
+                    case "CompletionChunkEvent":
+                        # This is a streaming event, so we can print it out.
+                        print(event["payload"]["token"], flush=True, end="")
+                    case _:
+                        print("Event:", event["type"])
+    
+        # Dont poll for the same events again.
+        offset = event_response["next_offset"]
         time.sleep(1)  # Poll every second.
 
     logs = get_structure_run_logs(
@@ -80,7 +104,7 @@ def run_structure(input: str) -> Optional[str]:
 
     print("\n".join(logs))
 
-    return structure_run["output"] if "output" in structure_run else None
+    return output
 
 
 if __name__ == "__main__":

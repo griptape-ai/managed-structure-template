@@ -8,10 +8,7 @@ from typing import Optional
 
 from utils import (
     create_structure_run,
-    get_output_from_events,
-    get_status_from_events,
-    get_structure_run_events,
-    print_streaming_events,
+    get_structure_run,
     get_structure_run_logs,
     is_status_complete,
 )
@@ -25,7 +22,7 @@ load_dotenv()
 # http://127.0.0.1:5000 .
 # For a Structure in Griptape Cloud, this environment variable
 # should be set to https://cloud.griptape.ai/
-HOST = os.getenv("GT_CLOUD_BASE_URL", "http://cloud.griptape.ai")
+HOST = os.environ["GT_CLOUD_BASE_URL"]
 
 # If running against the Skatepark emulator, this will be the ID
 # of the Structure that you registered with Skatepark. For a Structure
@@ -69,18 +66,12 @@ def run_structure(input: str) -> Optional[str]:
     # Runs are asynchronous, so we need to poll the status until it's no longer running.
     structure_run_id = structure_run["structure_run_id"]
     status = structure_run["status"]
-    offset = 0
-    output = None
-    while not is_status_complete(status):
-        event_response = get_structure_run_events(
-            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id, offset=offset
-        )
-        if output is None:
-            output = get_output_from_events(event_response["events"])
 
-        status = get_status_from_events(event_response["events"])
-        print_streaming_events(event_response["events"])
-        offset = event_response["next_offset"]
+    while not is_status_complete(status):
+        structure_run = get_structure_run(
+            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
+        )
+        status = structure_run["status"]
         time.sleep(1)  # Poll every second.
 
     logs = get_structure_run_logs(
@@ -89,7 +80,7 @@ def run_structure(input: str) -> Optional[str]:
 
     print("\n".join(logs))
 
-    return output
+    return structure_run["output"] if "output" in structure_run else None
 
 
 if __name__ == "__main__":
