@@ -68,30 +68,24 @@ def run_structure(input: str) -> Optional[str]:
     status = structure_run["status"]
     event_count = 0
     output = None
-    while not is_status_complete(status) or output is None:
+    while not output:
         event_response = get_structure_run_events(
             host=HOST, api_key=GT_API_KEY, run_id=structure_run_id, offset=event_count
         )
         events = event_response["events"]
         for event in events:
-            if event["origin"] == "SYSTEM":
-                status = event["payload"]["status"]
-                if event["type"] == "StructureRunError":
-                    output = "Error running Structure: {}".format(
-                        event["payload"]["status_detail"]
-                    )
-                    print(output)
-            elif event["origin"] == "USER":
-                match event["type"]:
-                    case "FinishStructureRunEvent":
-                        # The Griptape structure has output the result in this event,
-                        # so we can stop polling.
-                        output = event["payload"]["output_task_output"]["value"]
-                    case "CompletionChunkEvent":
-                        # This is a streaming event, so we can print it out.
-                        print(event["payload"]["token"], flush=True, end="")
-                    case _:
-                        print("Event:", event["type"])
+            match event["type"]:
+                case "StructureRunError" | "StructureRunSucceeded":
+                    output = event["payload"]["status_detail"]
+                case "FinishStructureRunEvent":
+                    # The Griptape structure has output the result in this event,
+                    # so we can stop polling.
+                    output = event["payload"]["output_task_output"]["value"]
+                case "CompletionChunkEvent":
+                    # This is a streaming event, so we can print it out.
+                    print(event["payload"]["token"], flush=True, end="")
+                case _:
+                    print("Event:", event["type"])
 
         # Dont poll for the same events again.
         event_count = event_response["next_offset"]
