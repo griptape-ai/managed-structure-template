@@ -8,10 +8,9 @@ from typing import Optional
 
 from utils import (
     create_structure_run,
-    get_structure_run,
     get_structure_run_events,
-    print_streaming_events,
     get_structure_run_logs,
+    is_status_complete,
 )
 
 # Pull in configuration variables.
@@ -67,40 +66,38 @@ def run_structure(input: str) -> Optional[str]:
     # Runs are asynchronous, so we need to poll the status until it's no longer running.
     structure_run_id = structure_run["structure_run_id"]
     status = structure_run["status"]
-    printed_event_ids = set()  # Keep track of which events we've printed.
-    while status not in ("SUCCEEDED", "FAILED"):
-        structure_run = get_structure_run(
-            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
+    event_count = 0
+    output = None
+    while not output:
+        event_response = get_structure_run_events(
+            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id, offset=event_count
         )
-        status = structure_run["status"]
+        events = event_response["events"]
+        for event in events:
+            match event["type"]:
+                case "StructureRunError" | "StructureRunSucceeded":
+                    output = event["payload"]["status_detail"]
+                case "FinishStructureRunEvent":
+                    # The Griptape structure has output the result in this event,
+                    # so we can stop polling.
+                    output = event["payload"]["output_task_output"]["value"]
+                case "CompletionChunkEvent":
+                    # This is a streaming event, so we can print it out.
+                    print(event["payload"]["token"], flush=True, end="")
+                case _:
+                    print("Event:", event["type"])
 
-        # You can comment out this block if you don't want to stream events as they occur.
-        event_list = get_structure_run_events(
-            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
-        )
-        events = event_list["events"]
-        printed_event_ids = print_streaming_events(events, printed_event_ids)
-
+        # Dont poll for the same events again.
+        event_count = event_response["next_offset"]
         time.sleep(1)  # Poll every second.
 
     logs = get_structure_run_logs(
         host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
     )
 
-    if structure_run["status"] == "SUCCEEDED":
-        stdout = next(
-            (log["message"] for log in logs["logs"] if log["stream"] == "stdout"),
-            None,
-        )
-        print(stdout)
+    print("\n".join(logs))
 
-        return structure_run["output"]["value"] if "output" in structure_run else None
-    else:
-        stderr = next(
-            (log["message"] for log in logs["logs"] if log["stream"] == "stderr"),
-            None,
-        )
-        raise ValueError(stderr)
+    return output
 
 
 if __name__ == "__main__":
