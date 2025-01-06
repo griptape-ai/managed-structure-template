@@ -51,7 +51,7 @@ def get_listener_api_key() -> str:
 
 
 def run_example_with_griptape_agent(
-    input: str, event_driver: Optional[GriptapeCloudEventListenerDriver]
+    input: str
 ):
     """This example demonstrates how to use a Griptape Agent as a Structure.
     The Agent is equipped with a Calculator tool, which it can use to solve math problems.
@@ -69,7 +69,7 @@ def run_example_with_griptape_agent(
 
 
 def run_example_with_no_agent(
-    input: str, event_driver: Optional[GriptapeCloudEventListenerDriver]
+    input: str
 ):
     """This example demonstrates how to run a program that does NOT rely on Griptape Agents,
     Pipelines, or Workflows, but still gets the benefits of running in the managed environment.
@@ -118,11 +118,11 @@ else:
     event_driver = None
 
 # If we're using an event driver, ensure its events go to the global event bus.
-EventBus.add_event_listener(EventListener(driver=event_driver))
+EventBus.add_event_listener(EventListener(event_listener_driver=event_driver))
 
 # This function will run with a Griptape Agent, who will automatically emit events.
-run_example_with_griptape_agent(input, event_driver)
+run_example_with_griptape_agent(input)
 
 # Un-comment this example to run a program that manually generates events, without
 # relying on a Griptape Agent.
-# run_example_with_no_agent(input, event_driver)
+# run_example_with_no_agent(input)
