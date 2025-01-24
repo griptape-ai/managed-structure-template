@@ -4,9 +4,7 @@ import sys
 from dotenv import load_dotenv
 
 from griptape.artifacts import TextArtifact
-from griptape.drivers import (
-    GriptapeCloudEventListenerDriver,
-)
+from griptape.drivers import GriptapeCloudEventListenerDriver, OpenAiChatPromptDriver
 from griptape.events import (
     EventBus,
     EventListener,
@@ -50,9 +48,7 @@ def get_listener_api_key() -> str:
     return api_key
 
 
-def run_example_with_griptape_agent(
-    input: str
-):
+def run_example_with_griptape_agent(input: str):
     """This example demonstrates how to use a Griptape Agent as a Structure.
     The Agent is equipped with a Calculator tool, which it can use to solve math problems.
     The Agent will generate events as it thinks through the problem, and then emits events
@@ -63,14 +59,15 @@ def run_example_with_griptape_agent(
         event_driver (optional): the object that will publish events as the agent thinks.
     """
 
-    structure = Agent(tools=[CalculatorTool(off_prompt=False)])
+    structure = Agent(
+        prompt_driver=OpenAiChatPromptDriver(model="gpt-4o", stream=True),
+        tools=[CalculatorTool(off_prompt=False)],
+    )
 
     structure.run(input)
 
 
-def run_example_with_no_agent(
-    input: str
-):
+def run_example_with_no_agent(input: str):
     """This example demonstrates how to run a program that does NOT rely on Griptape Agents,
     Pipelines, or Workflows, but still gets the benefits of running in the managed environment.
     There are situations where you may need to emit events outside of the automatic event generation
