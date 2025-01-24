@@ -118,8 +118,8 @@ else:
 EventBus.add_event_listener(EventListener(event_listener_driver=event_driver))
 
 # This function will run with a Griptape Agent, who will automatically emit events.
-run_example_with_griptape_agent(input)
+# run_example_with_griptape_agent(input)
 
 # Un-comment this example to run a program that manually generates events, without
 # relying on a Griptape Agent.
-# run_example_with_no_agent(input)
+run_example_with_no_agent(input)
