@@ -64,7 +64,7 @@ def run_example_with_griptape_agent(input: str):
         tools=[CalculatorTool(off_prompt=False)],
     )
 
-    structure.run(input)
+    structure.run_stream(input)
 
 
 def run_example_with_no_agent(input: str):
