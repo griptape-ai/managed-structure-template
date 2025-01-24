@@ -81,7 +81,7 @@ def run_structure(input: str) -> Optional[str]:
                     # The Griptape structure has output the result in this event,
                     # so we can stop polling.
                     output = event["payload"]["output_task_output"]["value"]
-                case "CompletionChunkEvent":
+                case "TextChunkEvent":
                     # This is a streaming event, so we can print it out.
                     print(event["payload"]["token"], flush=True, end="")
                 case _:
