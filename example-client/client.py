@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 
 from dotenv import load_dotenv
 from requests.exceptions import HTTPError
@@ -8,9 +7,8 @@ from typing import Optional
 
 from utils import (
     create_structure_run,
-    get_structure_run_events,
+    get_structure_run_event_stream,
     get_structure_run_logs,
-    is_status_complete,
 )
 
 # Pull in configuration variables.
@@ -63,33 +61,21 @@ def run_structure(input: str) -> Optional[str]:
         args=[input],
     )
 
-    # Runs are asynchronous, so we need to poll the status until it's no longer running.
+    # Runs are asynchronous, so we need to stream the events until it's no longer running.
     structure_run_id = structure_run["structure_run_id"]
-    status = structure_run["status"]
-    event_count = 0
     output = None
-    while not output:
-        event_response = get_structure_run_events(
-            host=HOST, api_key=GT_API_KEY, run_id=structure_run_id, offset=event_count
-        )
-        events = event_response["events"]
-        for event in events:
-            match event["type"]:
-                case "StructureRunError" | "StructureRunSucceeded":
-                    output = event["payload"]["status_detail"]
-                case "FinishStructureRunEvent":
-                    # The Griptape structure has output the result in this event,
-                    # so we can stop polling.
-                    output = event["payload"]["output_task_output"]["value"]
-                case "TextChunkEvent":
-                    # This is a streaming event, so we can print it out.
-                    print(event["payload"]["token"], flush=True, end="")
-                case _:
-                    print("Event:", event["type"])
-
-        # Dont poll for the same events again.
-        event_count = event_response["next_offset"]
-        time.sleep(1)  # Poll every second.
+    events = get_structure_run_event_stream(
+        host=HOST, api_key=GT_API_KEY, run_id=structure_run_id
+    )
+    for event in events:
+        match event["type"]:
+            case "StructureRunError" | "StructureRunSucceeded":
+                output = event["payload"]["status_detail"]
+            case "TextChunkEvent":
+                # This is a streaming event, so we can print it out.
+                print(event["payload"]["token"], flush=True, end="")
+            case _:
+                print("Event:", event["type"])
 
     logs = get_structure_run_logs(
         host=HOST, api_key=GT_API_KEY, run_id=structure_run_id

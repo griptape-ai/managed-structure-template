@@ -1,4 +1,6 @@
+from typing import Iterator
 import requests
+import json
 
 
 def generate_headers(api_key: str) -> dict:
@@ -64,26 +66,30 @@ def get_structure_run(host: str, api_key: str, run_id: str) -> dict:
     return response.json()
 
 
-def get_structure_run_events(host: str, api_key: str, run_id: str, offset: int) -> dict:
+def get_structure_run_event_stream(
+    host: str, api_key: str, run_id: str
+) -> Iterator[dict]:
     """Get all events for a run.
 
     Args:
         host: the host URL for the Structure.
         api_key: a Griptape Cloud API Key. This is ignored when running the Skatepark emulator, but required for a Griptape Cloud hosted Structure.
         run_id: The Structure Run ID.
-        offset: The offset to start from.
 
     Returns:
         The events for the Structure Run.
     """
-    response = requests.get(
-        f"{host}/api/structure-runs/{run_id}/events",
-        params={"offset": offset},
+    with requests.get(
+        f"{host}/api/structure-runs/{run_id}/events/stream",
         headers=generate_headers(api_key),
-    )
-    response.raise_for_status()
-
-    return response.json()
+        stream=True,
+    ) as response:
+        response.raise_for_status()
+        for line in response.iter_lines():
+            if line:
+                decoded_line = line.decode("utf-8")
+                if decoded_line.startswith("data:"):
+                    yield json.loads(decoded_line.removeprefix("data:").strip())
 
 
 def get_structure_run_logs(host: str, api_key: str, run_id: str) -> list[str]:
